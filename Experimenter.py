@@ -1,23 +1,28 @@
 from sklearn.model_selection import RepeatedStratifiedKFold
-from sklearn import datasets, svm
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn import datasets, metrics, svm
+from sklearn.decomposition import PCA
 import numpy as np
+import DataCWRU as cwru
 
-class DataDebug():
-  def __init__(self, n_splits=5, n_repeats=3, random_state=None):
+class DataDivision():
+  def __init__(self, n_splits=3, n_repeats=2, random_state=None, dataset=datasets.load_iris()):
     self.rkf = RepeatedStratifiedKFold(n_splits, n_repeats, random_state)
+    self.dataset = dataset
   def split(self):
     train = {}
     test = {}
-    for dataset in [datasets.load_iris()]:#, datasets.load_wine(), datasets.load_breast_cancer(),datasets.load_digits()]:
-      for itr, ite in self.rkf.split(dataset["data"],dataset["target"]):
-        train["data"] = dataset["data"][itr]
-        train["target"] = dataset["target"][itr]
-        test["data"] = dataset["data"][ite]
-        test["target"] = dataset["target"][ite]
-        yield train,test
+    for itr, ite in self.rkf.split(self.dataset["data"],self.dataset["target"]):
+      train["data"] = self.dataset["data"][itr]
+      train["target"] = self.dataset["target"][itr]
+      test["data"] = self.dataset["data"][ite]
+      test["target"] = self.dataset["target"][ite]
+      yield train,test
 
 class Experimenter():
-  def __init__(self, data=DataDebug(), methods={"SVM": svm.SVC()}):
+  def __init__(self, data=DataDivision(), methods={"SVM": svm.SVC()}):
     self.data=data
     self.methods=methods
   def perform(self):
@@ -33,11 +38,31 @@ class Experimenter():
         targets[clfname].append(clf.predict(test["data"]))
     return targets
 
+class Performance():
+  def __init__(self, metric=metrics.accuracy_score):
+    self.metric = metric
+    pass
+  def estimate(self, targets):
+    perfs = {}
+    for i in range(len(targets["actual"])):
+      actual = np.array(targets['actual'][i])
+      for clfname, predictions in targets.items():
+        if clfname == 'actual':
+          continue
+        if clfname not in perfs:
+          perfs[clfname] = []
+        pred = np.array(targets[clfname][i])
+        perfs[clfname].append(self.metric(actual,pred))
+    return perfs
 
-exp = Experimenter()
-targets = exp.perform()
-#print(targets)
-#for i in range(len(targets["actual"])):
-#  res = np.array(targets["actual"][i])==np.array(targets["SVM"][i])
-#  print(sum(res)/len(res))
+methods = {"standardSVM": Pipeline([('scaler',StandardScaler()),
+                                 ('SVM',svm.SVC())]),
+           "RandomForest": RandomForestClassifier()}
+methods = {'PCASVM': Pipeline([('PCA',PCA(n_components=10)),
+                             ('SVM', svm.SVC())])}
+data=cwru.DataCWRU()
+targets = Experimenter(data,methods).perform()
+results = Performance(lambda a,p: metrics.f1_score(a,p,average='macro')).estimate(targets)
+for method, performance in results.items():
+  print(method, performance)
 
