@@ -6,6 +6,7 @@ from sklearn import datasets, metrics, svm
 from sklearn.decomposition import PCA
 import numpy as np
 import DataCWRU as cwru
+import ExtractionStatistical as stat
 
 class DataDivision():
   def __init__(self, n_splits=3, n_repeats=2, random_state=None, dataset=datasets.load_iris()):
@@ -58,11 +59,13 @@ class Performance():
 methods = {"standardSVM": Pipeline([('scaler',StandardScaler()),
                                  ('SVM',svm.SVC())]),
            "RandomForest": RandomForestClassifier()}
-methods = {'PCASVM': Pipeline([('PCA',PCA(n_components=10)),
-                             ('SVM', svm.SVC())])}
+methods = {'PCASVM': Pipeline([('Stat',stat.ExtractionStatistical()),
+                               ('scaler',StandardScaler()),
+                               ('SVM', svm.SVC())])}
 data=cwru.DataCWRU()
 targets = Experimenter(data,methods).perform()
-results = Performance(lambda a,p: metrics.f1_score(a,p,average='macro')).estimate(targets)
+#results = Performance(lambda a,p: metrics.f1_score(a,p,average='macro')).estimate(targets)
+results = Performance(metrics.accuracy_score).estimate(targets)
 for method, performance in results.items():
   print(method, performance)
 
