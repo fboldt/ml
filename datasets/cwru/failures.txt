@@ -14,10 +14,6 @@ deir021_0 209.mat
 deir021_1 210.mat
 deir021_2 211.mat
 deir021_3 212.mat
-deir028_0 3001.mat
-deir028_1 3002.mat
-deir028_2 3003.mat
-deir028_3 3004.mat
 deb007_0 118.mat
 deb007_1 119.mat
 deb007_2 120.mat
@@ -30,10 +26,6 @@ deb021_0 222.mat
 deb021_1 223.mat
 deb021_2 224.mat
 deb021_3 225.mat
-deb028_0 3005.mat
-deb028_1 3006.mat
-deb028_2 3007.mat
-deb028_3 3008.mat
 deor007@6_0 130.mat
 deor007@6_1 131.mat
 deor007@6_2 132.mat
@@ -107,3 +99,11 @@ feor007@12_0 302.mat
 feor007@12_1 305.mat
 feor007@12_2 306.mat
 feor007@12_3 307.mat
+deir028_0 3001.mat
+deir028_1 3002.mat
+deir028_2 3003.mat
+deir028_3 3004.mat
+deb028_0 3005.mat
+deb028_1 3006.mat
+deb028_2 3007.mat
+deb028_3 3008.mat
