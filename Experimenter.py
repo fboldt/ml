@@ -8,7 +8,7 @@ import numpy as np
 import DataCWRU as cwru
 from FeatureExtraction import StatisticalTime
 from sklearn.feature_selection import SelectKBest
-import LinearMachine as lm
+import ELM as elm
 
 class DataDivision():
   def __init__(self, n_splits=3, n_repeats=2, random_state=None, dataset=datasets.load_iris()):
@@ -58,22 +58,21 @@ class Performance():
         perfs[clfname].append(self.metric(actual,pred))
     return perfs
 
-methods = {"standardSVM": Pipeline([('scaler',StandardScaler()),
-                                    ('SVM',svm.SVC())]),
-           "RandomForest": RandomForestClassifier()}
+'''
+data = cwru.DataCWRU(debug=True)
 methods = {'StatSVM': Pipeline([('Stat', StatisticalTime()),
                                 ('scaler', StandardScaler()),
                                 ('SVM', svm.SVC())]),
            'RandFor': Pipeline([('Stat', StatisticalTime()),
                                 ('scaler',StandardScaler()),
                                 ('RandomForest', RandomForestClassifier())])}
-data = cwru.DataCWRU(debug=True)
-#data = DataDivision(dataset=datasets.load_wine())
-#methods = {"LinearMachine": Pipeline([('scaler',StandardScaler()),
-#                                      ('LM', lm.LinearMachine())])}
+'''
+data = DataDivision(dataset=datasets.load_wine())
+methods = {"ELM": Pipeline([('scaler',StandardScaler()),
+                                      ('ELM', elm.ELM())])}
+#'''
 targets = Experimenter(data,methods).perform()
 results = Performance(lambda a,p: metrics.f1_score(a,p,average='macro')).estimate(targets)
 #results = Performance(metrics.accuracy_score).estimate(targets)
 for method, performance in results.items():
   print(method, performance, np.mean(performance))
-
