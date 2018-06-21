@@ -8,28 +8,27 @@ class LinearMachine():
     self.labelbinarizer = LabelBinarizer()
   def fit(self, samples, targets):
     self.labels = list(set(targets))
-    #targets = self.labelbinarizer.fit_transform(y)
-    #Xt = np.transpose(X)
-    #self.W = np.matmul(linalg.pinv(X),targets)
     y = tf.constant(self.labelbinarizer.fit_transform(targets), dtype=tf.float32, name='y')
     X = tf.constant(samples, dtype=tf.float32, name='X')
-    Xt = tf.transpose(X)
-    W = tf.matmul(tf.matmul(tf.matrix_inverse(tf.matmul(Xt, X)), Xt), y)
+    bias = tf.ones([samples.shape[0],1], dtype=tf.float32, name='bias')
+    Xb = tf.concat([bias, X], axis=1, name='Xb')
+    Xt = tf.transpose(Xb)
+    W = tf.matmul(tf.matmul(tf.matrix_inverse(tf.matmul(Xt, Xb)), Xt), y)
     with tf.Session() as sess:
       self.W = W.eval()
   def predict(self, samples, y=None):
     X = tf.constant(samples, dtype=tf.float32, name='X')
+    bias = tf.ones([samples.shape[0],1], dtype=tf.float32, name='bias')
+    Xb = tf.concat([bias, X], axis=1)
     W = tf.constant(self.W, dtype=tf.float32, name='W')
-    py = tf.matmul(X,W)
+    py = tf.matmul(Xb,W)
     with tf.Session() as sess:
       pred = py.eval()
-    idxs = np.argmax(pred, axis=1)
-    resp = np.array([self.labels[i] for i in idxs])
-    return resp
+    return np.array([self.labels[i] for i in np.argmax(pred, axis=1)])
 
-from sklearn import datasets
-data = datasets.load_iris()
-clf = LinearMachine()
-clf.fit(data["data"],data["target"])
-resp = clf.predict(data["data"])
-print(resp)
+#from sklearn import datasets
+#data = datasets.load_iris()
+#clf = LinearMachine()
+#clf.fit(data["data"],data["target"])
+#resp = clf.predict(data["data"])
+#print(resp)

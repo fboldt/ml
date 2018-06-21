@@ -35,7 +35,7 @@ def kf(x):
   x = np.array(x)
   return stats.kurtosis(x)/(np.mean(x**2)**2)
 
-class  ExtractionStatistical():
+class  StatisticalTime():
   def __init__(self):
     pass
   def fit(self, X, y=None):

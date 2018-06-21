@@ -6,8 +6,9 @@ from sklearn import datasets, metrics, svm
 from sklearn.decomposition import PCA
 import numpy as np
 import DataCWRU as cwru
-import ExtractionStatistical as stat
+from FeatureExtraction import StatisticalTime
 from sklearn.feature_selection import SelectKBest
+import LinearMachine as lm
 
 class DataDivision():
   def __init__(self, n_splits=3, n_repeats=2, random_state=None, dataset=datasets.load_iris()):
@@ -58,15 +59,18 @@ class Performance():
     return perfs
 
 methods = {"standardSVM": Pipeline([('scaler',StandardScaler()),
-                                 ('SVM',svm.SVC())]),
+                                    ('SVM',svm.SVC())]),
            "RandomForest": RandomForestClassifier()}
-methods = {'StatSVM': Pipeline([('Stat', stat.ExtractionStatistical()),
-                               ('scaler', StandardScaler()),
-                               ('SVM', svm.SVC())]),
-           'RandFor': Pipeline([('Stat', stat.ExtractionStatistical()),
-                               ('scaler',StandardScaler()),
-                               ('RandomForest', RandomForestClassifier())])}
-data=cwru.DataCWRU(True)
+methods = {'StatSVM': Pipeline([('Stat', StatisticalTime()),
+                                ('scaler', StandardScaler()),
+                                ('SVM', svm.SVC())]),
+           'RandFor': Pipeline([('Stat', StatisticalTime()),
+                                ('scaler',StandardScaler()),
+                                ('RandomForest', RandomForestClassifier())])}
+data = cwru.DataCWRU(debug=True)
+data = DataDivision(dataset=datasets.load_wine())
+methods = {"LinearMachine": Pipeline([('scaler',StandardScaler()),
+                                      ('LM', lm.LinearMachine())])}
 targets = Experimenter(data,methods).perform()
 results = Performance(lambda a,p: metrics.f1_score(a,p,average='macro')).estimate(targets)
 #results = Performance(metrics.accuracy_score).estimate(targets)
