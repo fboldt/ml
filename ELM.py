@@ -4,8 +4,9 @@ from numpy import linalg as la
 import tensorflow as tf
 
 class ELM():
-  def __init__(self, factor=5):
-    self.factor = factor
+  def __init__(self, n_hidden_nodes=None):
+    self.random_range = 2
+    self.n_hidden_nodes = n_hidden_nodes
     self.labelbinarizer = LabelBinarizer()
 
   def fit(self, samples, targets):
@@ -14,8 +15,9 @@ class ELM():
     X = tf.constant(samples, dtype=tf.float32, name='X')
     bias = tf.ones([samples.shape[0],1], dtype=tf.float32, name='bias')
     Xb = tf.concat([bias, X], axis=1, name='Xb')
-    #self.Wh = tf.random_uniform([int(Xb.shape[1]),int(Xb.shape[1]*self.factor)], minval=-0.5, maxval=0.5, dtype=tf.float32)
-    self.Wh = tf.random_uniform([int(Xb.shape[1]),int(Xb.shape[1]*self.factor)], minval=-2, maxval=2, dtype=tf.float32)
+    if self.n_hidden_nodes == None:
+      self.n_hidden_nodes = int(Xb.shape[0])//3 
+    self.Wh = tf.scalar_mul(self.random_range,tf.random_uniform([int(Xb.shape[1]),self.n_hidden_nodes], minval=-1, maxval=1, dtype=tf.float32))
     H1 = tf.sigmoid(tf.matmul(Xb,self.Wh), name="H1")
     H1t = tf.transpose(H1)
     self.Wo = tf.matmul(tf.matmul(tf.matrix_inverse(tf.matmul(H1t, H1)), H1t), y)

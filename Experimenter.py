@@ -11,7 +11,7 @@ from sklearn.feature_selection import SelectKBest
 import ELM as elm
 
 class DataDivision():
-  def __init__(self, n_splits=3, n_repeats=2, random_state=None, dataset=datasets.load_iris()):
+  def __init__(self, n_splits=5, n_repeats=3, random_state=None, dataset=datasets.load_iris()):
     self.rkf = RepeatedStratifiedKFold(n_splits, n_repeats, random_state)
     self.dataset = dataset
   def split(self):
@@ -67,9 +67,12 @@ methods = {'StatSVM': Pipeline([('Stat', StatisticalTime()),
                                 ('scaler',StandardScaler()),
                                 ('RandomForest', RandomForestClassifier())])}
 '''
+data = DataDivision()
 data = DataDivision(dataset=datasets.load_wine())
-methods = {"ELM": Pipeline([('scaler',StandardScaler()),
-                                      ('ELM', elm.ELM())])}
+#data = DataDivision(dataset=datasets.load_breast_cancer())
+methods = {"Test": Pipeline([('scaler',StandardScaler()),
+                             #('clf', svm.SVC())])}
+                             ('ELM', elm.ELM())])}
 #'''
 targets = Experimenter(data,methods).perform()
 results = Performance(lambda a,p: metrics.f1_score(a,p,average='macro')).estimate(targets)
