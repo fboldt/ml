@@ -68,9 +68,9 @@ methods = {'StatSVM': Pipeline([('Stat', StatisticalTime()),
                                 ('scaler',StandardScaler()),
                                 ('RandomForest', RandomForestClassifier())])}
 data = cwru.DataCWRU(debug=True)
-data = DataDivision(dataset=datasets.load_wine())
-methods = {"LinearMachine": Pipeline([('scaler',StandardScaler()),
-                                      ('LM', lm.LinearMachine())])}
+#data = DataDivision(dataset=datasets.load_wine())
+#methods = {"LinearMachine": Pipeline([('scaler',StandardScaler()),
+#                                      ('LM', lm.LinearMachine())])}
 targets = Experimenter(data,methods).perform()
 results = Performance(lambda a,p: metrics.f1_score(a,p,average='macro')).estimate(targets)
 #results = Performance(metrics.accuracy_score).estimate(targets)

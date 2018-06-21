@@ -8,6 +8,7 @@ class DataCWRU():
   def __init__(self, feature_model=None, debug=False, n_repeat=1):
     self.n_repeat = n_repeat
     self.n_splits = 4
+    self.debug = debug
     self.max_sample_size = 4096# 2048# 1024# 8192# 
     self.fails = collections.defaultdict(list)
     self.datadir = 'datasets/cwru/'
@@ -19,7 +20,7 @@ class DataCWRU():
       if line.startswith('#'):
         continue
       fail = line.split()
-      if debug:
+      if debug and not fail[0].startswith('normal'): #When it is True, it ignores the fault severity.
         f = fail[0].split('0')
       else:
         f = fail[0].split('_')
@@ -66,5 +67,6 @@ class DataCWRU():
             begsig += self.max_sample_size  
             fold["target"].append(self.target[i])
     fold["data"] = np.array(fold["data"])
+    #print(set(fold["target"]), fold["data"].shape)
     return fold
 
