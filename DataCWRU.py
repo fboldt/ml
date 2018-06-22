@@ -72,10 +72,11 @@ class DataCWRU():
             key = k.split('_')[0]
             while begsig+self.max_sample_size < len(matfile[key+'_DE_time']) and begsig+self.max_sample_size < len(matfile[key+'_FE_time']):
               desig = [item for sublist in matfile[key+'_DE_time'][begsig:begsig+self.max_sample_size] for item in sublist]
-              defeat = self.feature_model.transform(desig)
+              #defeat = self.feature_model.transform(desig)
               fesig = [item for sublist in matfile[key+'_FE_time'][begsig:begsig+self.max_sample_size] for item in sublist]
-              fefeat = self.feature_model.transform(fesig)
-              fold["data"].append(np.append(defeat,fefeat))
+              #fefeat = self.feature_model.transform(fesig)
+              #fold["data"].append(np.append(defeat,fefeat))
+              fold["data"].append(self.feature_model.transform([desig,fesig]))
               fold["target"].append(self.target[i])
               begsig += self.max_sample_size  
     fold["data"] = np.array(fold["data"])
