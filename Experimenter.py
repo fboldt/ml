@@ -34,19 +34,20 @@ class Experimenter():
       if "actual" not in targets:
         targets["actual"] = []
       targets["actual"].append(test["target"])
+      '''
+      print("\ttrain")
+      for label in set(train["target"]):
+        print(label, train["target"].count(label))
+      print("\ttest")
+      for label in set(test["target"]):
+        print(label, test["target"].count(label))
+      #'''
       for clfname, clf in self.methods.items():
         if clfname not in targets:
           targets[clfname] = []
         clf.fit(train["data"],train["target"])
         targets[clfname].append(clf.predict(test["data"]))
-        '''
-        print("\ttrain")
-        for label in set(train["target"]):
-          print(label, train["target"].count(label))
-        print("\ttest")
-        for label in set(test["target"]):
-          print(label, test["target"].count(label))
-        #'''
+        #print(clfname,sum([1 for pred,actual in zip(targets[clfname][-1],test["target"]) if pred==actual])/len(test["target"]))
     return targets
 
 class Performance():

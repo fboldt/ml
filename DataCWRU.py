@@ -21,7 +21,7 @@ class DataCWRU():
       if line.startswith('#'):
         continue
       fail = line.split()
-      if debug and not fail[0].startswith('normal'): #When it is True, it ignores the fault severity.
+      if False and debug and not fail[0].startswith('normal'): #When it is True, it ignores the fault severity.
         f = fail[0].split('0')
       else:
         f = fail[0].split('_')
@@ -72,11 +72,9 @@ class DataCWRU():
             key = k.split('_')[0]
             while begsig+self.max_sample_size < len(matfile[key+'_DE_time']) and begsig+self.max_sample_size < len(matfile[key+'_FE_time']):
               desig = [item for sublist in matfile[key+'_DE_time'][begsig:begsig+self.max_sample_size] for item in sublist]
-              #defeat = self.feature_model.transform(desig)
               fesig = [item for sublist in matfile[key+'_FE_time'][begsig:begsig+self.max_sample_size] for item in sublist]
-              #fefeat = self.feature_model.transform(fesig)
-              #fold["data"].append(np.append(defeat,fefeat))
-              fold["data"].append(self.feature_model.transform([desig,fesig]))
+              features = self.feature_model.transform([desig,fesig])
+              fold["data"].append(np.append(features[0],features[1]))
               fold["target"].append(self.target[i])
               begsig += self.max_sample_size  
     fold["data"] = np.array(fold["data"])
