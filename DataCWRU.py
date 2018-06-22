@@ -6,8 +6,9 @@ import scipy.io
 
 class DataCWRU():
   def __init__(self, feature_model=None, debug=False, n_repeat=1):
-    self.n_repeat = n_repeat
     self.n_splits = 4
+    self.feature_model = feature_model
+    self.n_repeat = n_repeat
     self.debug = debug
     self.max_sample_size = 4096# 2048# 1024# 8192# 
     self.fails = collections.defaultdict(list)
@@ -49,11 +50,12 @@ class DataCWRU():
           end = end + 1
         for j in range(start,end):
           boolean_idx[j] = False
-        train = self.__readmatfile([i for i,j in zip(self.idxs, boolean_idx) if j])
-        test = self.__readmatfile([i for i,j in zip(self.idxs, boolean_idx) if not j])
+        if self.feature_model == None:
+          train = self.__readmatfiles([i for i,j in zip(self.idxs, boolean_idx) if j])
+          test = self.__readmatfiles([i for i,j in zip(self.idxs, boolean_idx) if not j])
         yield train, test
 
-  def __readmatfile(self, indexes):
+  def __readmatfiles(self, indexes):
     fold = collections.defaultdict(list)
     for i in indexes:
       matfile = scipy.io.loadmat(self.datadir+self.files[i])

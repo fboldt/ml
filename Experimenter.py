@@ -39,6 +39,14 @@ class Experimenter():
           targets[clfname] = []
         clf.fit(train["data"],train["target"])
         targets[clfname].append(clf.predict(test["data"]))
+        '''
+        print("\ttrain")
+        for label in set(train["target"]):
+          print(label, train["target"].count(label))
+        print("\ttest")
+        for label in set(test["target"]):
+          print(label, test["target"].count(label))
+        #'''
     return targets
 
 class Performance():
@@ -58,7 +66,7 @@ class Performance():
         perfs[clfname].append(self.metric(actual,pred))
     return perfs
 
-'''
+#'''
 data = cwru.DataCWRU(debug=True)
 methods = {'StatSVM': Pipeline([('Stat', StatisticalTime()),
                                 ('scaler', StandardScaler()),
@@ -79,3 +87,4 @@ results = Performance(lambda a,p: metrics.f1_score(a,p,average='macro')).estimat
 #results = Performance(metrics.accuracy_score).estimate(targets)
 for method, performance in results.items():
   print(method, performance, np.mean(performance))
+
