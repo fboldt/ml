@@ -67,11 +67,11 @@ class Performance():
     return perfs
 
 #'''
-data = cwru.DataCWRU(debug=True)
-methods = {'StatSVM': Pipeline([('Stat', StatisticalTime()),
+data = cwru.DataCWRU(debug=True, feature_model=StatisticalTime())
+methods = {'StatSVM': Pipeline([#('Stat', StatisticalTime()),
                                 ('scaler', StandardScaler()),
                                 ('SVM', svm.SVC())]),
-           'RandFor': Pipeline([('Stat', StatisticalTime()),
+           'RandFor': Pipeline([#('Stat', StatisticalTime()),
                                 ('scaler',StandardScaler()),
                                 ('RandomForest', RandomForestClassifier())])}
 '''

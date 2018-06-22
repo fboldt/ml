@@ -5,7 +5,7 @@ import scipy.stats as stats
 # roor mean square
 def rms(x):
   x = np.array(x)
-  return np.sqrt(np.mean(x**2))
+  return np.sqrt(np.mean(np.square(x)))
 # square root amplitude
 def sra(x):
   x = np.array(x)
@@ -35,13 +35,11 @@ def kf(x):
   x = np.array(x)
   return stats.kurtosis(x)/(np.mean(x**2)**2)
 
-class  StatisticalTime():
+class  StatisticalTime(TransformerMixin):
   def __init__(self):
     pass
   def fit(self, X, y=None):
     return self
   def transform(self, X, y=None):
-    #return np.array([[rms(np.real(np.fft.fft(x))), np.mean(np.real(np.fft.fft(x)))] for x in X])
     return np.array([[rms(x), sra(x), stats.kurtosis(x), stats.skew(x), ppv(x), cf(x), ifa(x), mf(x), sf(x), kf(x)] for x in X])
-
 
