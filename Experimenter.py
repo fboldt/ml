@@ -67,7 +67,7 @@ class Performance():
         perfs[clfname].append(self.metric(actual,pred))
     return perfs
 
-#'''
+'''
 data = cwru.DataCWRU(debug=True, feature_model=StatisticalTime())
 methods = {'StatSVM': Pipeline([#('Stat', StatisticalTime()),
                                 ('scaler', StandardScaler()),
@@ -77,15 +77,16 @@ methods = {'StatSVM': Pipeline([#('Stat', StatisticalTime()),
                                 ('RandomForest', RandomForestClassifier())])}
 '''
 data = DataDivision()
-data = DataDivision(dataset=datasets.load_wine())
+data = DataDivision(dataset=datasets.load_iris())
+#data = DataDivision(dataset=datasets.load_wine())
 #data = DataDivision(dataset=datasets.load_breast_cancer())
 methods = {"Test": Pipeline([('scaler',StandardScaler()),
                              #('clf', svm.SVC())])}
                              ('ELM', elm.ELM())])}
 #'''
 targets = Experimenter(data,methods).perform()
-results = Performance(lambda a,p: metrics.f1_score(a,p,average='macro')).estimate(targets)
-#results = Performance(metrics.accuracy_score).estimate(targets)
+#results = Performance(lambda a,p: metrics.f1_score(a,p,average='macro')).estimate(targets)
+results = Performance(metrics.accuracy_score).estimate(targets)
 for method, performance in results.items():
   print(method, performance, np.mean(performance))
 
