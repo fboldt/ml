@@ -36,13 +36,10 @@ class ELM():
 from sklearn import datasets
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
-import time
-start_time = time.time()
 data = datasets.load_iris()#datasets.load_breast_cancer()#
 clf = ELM()
 #clf = Pipeline([('scaler',StandardScaler()), ('ELM', ELM())])
 clf.fit(data["data"],data["target"])
 resp = clf.predict(data["data"])
-elapsed_time = time.time() - start_time
-print(sum(resp==data["target"])/len(resp),elapsed_time)
+print(sum(resp==data["target"])/len(resp))
 #'''
